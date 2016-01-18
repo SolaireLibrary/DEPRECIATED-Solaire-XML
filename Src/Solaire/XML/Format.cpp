@@ -20,7 +20,7 @@
 
 namespace Solaire {
 
-    static bool skipWhitespace(IStream& aStream) {
+    /*static bool skipWhitespace(IStream& aStream) {
         if(aStream.end()) return true;
         char c;
         aStream >> c;
@@ -30,166 +30,80 @@ namespace Solaire {
         }
         aStream.setOffset(aStream.getOffset() - 1);
         return true;
-    }
+    }*/
+    static CString writeObject(const StringConstant<char>& aName, const GenericObject& aValue) throw();
 
-    static bool writeValue(const GenericValue& aValue, OStream& aStream) throw();
+    static CString writeArray(const StringConstant<char>& aName, const GenericArray& aValue) throw() {
+        CString tmp;
 
-    static bool writeNull(OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeChar(const char aValue, OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeBool(const bool aValue, OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeUnsigned(const uint64_t aValue, OStream& aStream) throw() {
-        /*CString tmp;
-        tmp += aValue;
-        aStream << tmp;
-        return true;*/
-        return false;
-    }
-
-    static bool writeSigned(const int64_t aValue, OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeDouble(const double aValue, OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeString(const StringConstant<char>& aValue, OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeArray(const GenericArray& aValue, OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeObject(const GenericObject& aValue, OStream& aStream) throw() {
-        return false;
-    }
-
-    static bool writeValue(const GenericValue& aValue, OStream& aStream) throw() {
-        switch(aValue.getType()) {
-        case GenericValue::NULL_T:
-            return writeNull(aStream);
-        case GenericValue::CHAR_T:
-            return writeChar(aValue.getChar(), aStream);
-        case GenericValue::BOOL_T:
-            return writeBool(aValue.getBool(), aStream);
-        case GenericValue::UNSIGNED_T:
-            return writeUnsigned(aValue.getUnsigned(), aStream);
-        case GenericValue::SIGNED_T:
-            return writeSigned(aValue.getSigned(), aStream);
-        case GenericValue::DOUBLE_T:
-            return writeDouble(aValue.getDouble(), aStream);
-        case GenericValue::STRING_T:
-            return writeString(aValue.getString(), aStream);
-        case GenericValue::ARRAY_T:
-            return writeArray(aValue.getArray(), aStream);
-        case GenericValue::OBJECT_T:
-            return writeObject(aValue.getObject(), aStream);
-        default:
-            return false;
-        }
-    }
-
-    static GenericValue::ValueType getType(IStream& aStream) {
-        const int32_t offset = aStream.getOffset();
-        GenericValue::ValueType type = GenericValue::NULL_T;
-
-        skipWhitespace(aStream);
-        if(! aStream.end()) {
-            char c;
-            aStream >> c;
-
-            switch(c){
-            case 'n':
-                type = GenericValue::NULL_T;
-                break;
-            case 't':
-            case 'f':
-                type = GenericValue::BOOL_T;
-                break;
-            case '-':
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                type = GenericValue::DOUBLE_T;
-                break;
-            case '"':
-                type = GenericValue::STRING_T;
-                break;
-            case '[':
-                type = GenericValue::ARRAY_T;
-                break;
-            case '{':
-                type = GenericValue::OBJECT_T;
-                break;
-            default:
-                break;
+        tmp += '<';
+        tmp += aName;
+        if(aValue.size() > 0) {
+            tmp += '>';
+            const auto end = aValue.end();
+            for(auto i = aValue.begin(); i != end; ++i) {
+                switch(i->getType()) {
+                    case GenericValue::NULL_T:
+                        tmp += "<null/>";
+                        break;
+                    case GenericValue::CHAR_T:
+                        tmp += "<char>";
+                        tmp += i->getChar();
+                        tmp += "</char>";
+                        break;
+                    case GenericValue::BOOL_T:
+                        tmp += "<bool>";
+                        if(i->getBool()) {
+                            tmp += "true";
+                        }else {
+                            tmp += "false";
+                        }
+                        tmp += "</bool>";
+                        break;
+                    case GenericValue::UNSIGNED_T:
+                        tmp += "<unsigned>";
+                        tmp += i->getUnsigned();
+                        tmp += "</unsigned>";
+                        break;
+                    case GenericValue::SIGNED_T:
+                        tmp += "<signed>";
+                        tmp += i->getSigned();
+                        tmp += "</signed>";
+                        break;
+                    case GenericValue::DOUBLE_T:
+                        tmp += "<double>";
+                        tmp += i->getDouble();
+                        tmp += "</double>";
+                        break;
+                    case GenericValue::STRING_T:
+                        tmp += "<string>";
+                        tmp += i->getString();
+                        tmp += "</string>";
+                        break;
+                    case GenericValue::ARRAY_T:
+                        tmp += writeArray(CString("array"), i->getArray());
+                        break;
+                    case GenericValue::OBJECT_T:
+                        tmp += writeObject(CString("object"), i->getObject());
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            tmp += '<';
+            tmp += '/';
+            tmp += aName;
+            tmp += '>';
+        }else {
+            tmp += '/';
+            tmp += '>';
         }
-
-        aStream.setOffset(offset);
-        return type;
     }
 
-    static GenericValue readValue(IStream& aStream);
-
-    static GenericValue readNull(IStream& aStream) throw() {
-        throw std::runtime_error("Xml::Null : Not implemented");
-    }
-
-    static GenericValue readBool(IStream& aStream) {
-        throw std::runtime_error("Xml::Bool : Not implemented");
-    }
-
-    static GenericValue readDouble(IStream& aStream) throw() {
-        throw std::runtime_error("Xml::Double : Not implemented");
-    }
-
-    static GenericValue readString(IStream& aStream) {
-        throw std::runtime_error("Xml::String : Not implemented");
-    }
-
-    static GenericValue readArray(IStream& aStream) {
-        throw std::runtime_error("Xml::Array : Not implemented");
-    }
-
-    static GenericValue readObject(IStream& aStream) {
-        throw std::runtime_error("Xml::Object : Not implemented");
-    }
-
-    static GenericValue readValue(IStream& aStream) {
-        switch(getType(aStream)) {
-        case GenericValue::NULL_T:
-            return readNull(aStream);
-        case GenericValue::BOOL_T:
-            return readBool(aStream);
-        case GenericValue::DOUBLE_T:
-            return readDouble(aStream);
-        case GenericValue::STRING_T:
-            return readString(aStream);
-        case GenericValue::ARRAY_T:
-            return readArray(aStream);
-        case GenericValue::OBJECT_T:
-            return readObject(aStream);
-        default:
-        throw std::runtime_error("Invalid json type");
-        }
+    static CString writeObject(const StringConstant<char>& aName, const GenericObject& aValue) throw() {
+        //! \todo Implement writeObject
+        throw std::runtime_error("Not implemented");
     }
 
 
@@ -201,7 +115,8 @@ namespace Solaire {
 
     GenericValue SOLAIRE_EXPORT_CALL XmlFormat::readValue(IStream& aStream) const throw() {
         try{
-            return Solaire::readValue(aStream);
+            //! \todo Implement XML read
+            throw std::runtime_error("Not implemented");
         }catch(std::exception& e) {
             std::cerr << e.what() << std::endl;
             return GenericValue();
@@ -211,7 +126,16 @@ namespace Solaire {
     bool SOLAIRE_EXPORT_CALL XmlFormat::writeValue(const GenericValue& aValue, OStream& aStream) const throw() {
 
         try{
-            return Solaire::writeValue(aValue, aStream);
+            switch(aValue.getType()) {
+            case GenericValue::ARRAY_T:
+                aStream << writeArray(CString("array"), aValue.getArray());
+                return true;
+            case GenericValue::OBJECT_T:
+                aStream << writeObject(CString("object"), aValue.getObject());
+                return false;
+            default:
+                return false;
+            }
         }catch(std::exception& e) {
             std::cerr << e.what() << std::endl;
             return false;

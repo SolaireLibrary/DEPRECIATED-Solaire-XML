@@ -102,8 +102,104 @@ namespace Solaire {
     }
 
     static CString writeObject(const StringConstant<char>& aName, const GenericObject& aValue) throw() {
-        //! \todo Implement writeObject
-        throw std::runtime_error("Not implemented");
+        CString tmp;
+
+        if(aValue.size() == 0) {
+            tmp += '<';
+            tmp += aName;
+            tmp += '/';
+            tmp += '>';
+            return tmp;
+        }
+
+        const auto entries = aValue.getEntries();
+        const auto end = entries->end();
+
+        tmp += '<';
+        tmp += aName;
+
+        // Write attributes
+        tmp += ' ';
+        for(auto i = entries->begin(); i != end; ++i) {
+            switch(i->second.getType()) {
+            case GenericValue::NULL_T:
+                tmp += i->first;
+                tmp += '=';
+                tmp += '"';
+                tmp += "null";
+                tmp += '"';
+                break;
+            case GenericValue::CHAR_T:
+                tmp += i->first;
+                tmp += '=';
+                tmp += '"';
+                tmp += i->second.getChar();
+                tmp += '"';
+                break;
+            case GenericValue::BOOL_T:
+                tmp += i->first;
+                tmp += '=';
+                tmp += '"';
+                if(i->second.getBool()) {
+                    tmp += "true";
+                }else {
+                    tmp += "false";
+                }
+                tmp += '"';
+                break;
+            case GenericValue::UNSIGNED_T:
+                tmp += i->first;
+                tmp += '=';
+                tmp += '"';
+                tmp += i->second.getUnsigned();
+                tmp += '"';
+                break;
+            case GenericValue::SIGNED_T:
+                tmp += i->first;
+                tmp += '=';
+                tmp += '"';
+                tmp += i->second.getSigned();
+                tmp += '"';
+                break;
+            case GenericValue::DOUBLE_T:
+                tmp += i->first;
+                tmp += '=';
+                tmp += '"';
+                tmp += i->second.getDouble();
+                tmp += '"';
+                break;
+            case GenericValue::STRING_T:
+                tmp += i->first;
+                tmp += '=';
+                tmp += '"';
+                tmp += i->second.getString();
+                tmp += '"';
+                break;
+            default:
+                break;
+            }
+        }
+
+        tmp += '>';
+
+        // Write elements
+        for(auto i = entries->begin(); i != end; ++i) {
+            switch(i->second.getType()) {
+            case GenericValue::ARRAY_T:
+                tmp += writeArray(i->first, i->second.getArray());
+                break;
+            case GenericValue::OBJECT_T:
+                tmp += writeObject(i->first, i->second.getObject());
+                break;
+            default:
+                break;
+            }
+        }
+
+        tmp += '<';
+        tmp += '/';
+        tmp += aName;
+        tmp += '>';
     }
 
 

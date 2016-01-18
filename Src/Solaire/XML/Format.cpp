@@ -42,47 +42,47 @@ namespace Solaire {
             for(auto i = aValue.begin(); i != end; ++i) {
                 switch(i->getType()) {
                     case GenericValue::NULL_T:
-                        aStream << "<null/>";
+                        aStream << "<solaire_array_element type=\"null\"/>";
                         break;
                     case GenericValue::CHAR_T:
-                        aStream << "<char>";
+                        aStream << "<solaire_array_element type=\"char\" value=\"";
                         aStream << i->getChar();
-                        aStream << "</char>";
+                        aStream << "\"/>";
                         break;
                     case GenericValue::BOOL_T:
-                        aStream << "<bool>";
+                        aStream << "<solaire_array_element type=\"bool\" value=\"";
                         if(i->getBool()) {
                             aStream << "true";
                         }else {
                             aStream << "false";
                         }
-                        aStream << "</bool>";
+                        aStream << "\"/>";
                         break;
                     case GenericValue::UNSIGNED_T:
-                        aStream << "<unsigned>";
+                        aStream << "<solaire_array_element type=\"number\" value=\"";
                         aStream << i->getUnsigned();
-                        aStream << "</unsigned>";
+                        aStream << "\"/>";
                         break;
                     case GenericValue::SIGNED_T:
-                        aStream << "<signed>";
+                        aStream << "<solaire_array_element type=\"number\" value=\"";
                         aStream << i->getSigned();
-                        aStream << "</signed>";
+                        aStream << "\"/>";
                         break;
                     case GenericValue::DOUBLE_T:
-                        aStream << "<double>";
+                        aStream << "<solaire_array_element type=\"number\" value=\"";
                         aStream << i->getDouble();
-                        aStream << "</double>";
+                        aStream << "\"/>";
                         break;
                     case GenericValue::STRING_T:
-                        aStream << "<string>";
+                        aStream << "<solaire_array_element type=\"string\" value=\"";
                         aStream << i->getString();
-                        aStream << "</string>";
+                        aStream << "\"/>";
                         break;
                     case GenericValue::ARRAY_T:
-                        writeArray(CString("array"), i->getArray(), aStream);
+                        writeArray(CString("solaire_array_element"), i->getArray(), aStream);
                         break;
                     case GenericValue::OBJECT_T:
-                        writeObject(CString("object"), i->getObject(), aStream);
+                        writeObject(CString("solaire_array_element"), i->getObject(), aStream);
                         break;
                     default:
                         break;

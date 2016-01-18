@@ -31,175 +31,173 @@ namespace Solaire {
         aStream.setOffset(aStream.getOffset() - 1);
         return true;
     }*/
-    static CString writeObject(const StringConstant<char>& aName, const GenericObject& aValue) throw();
+    static bool writeObject(const StringConstant<char>& aName, const GenericObject& aValue, OStream& aStream) throw();
 
-    static CString writeArray(const StringConstant<char>& aName, const GenericArray& aValue) throw() {
-        CString tmp;
-
-        tmp += '<';
-        tmp += aName;
+    static bool writeArray(const StringConstant<char>& aName, const GenericArray& aValue, OStream& aStream) throw() {
+        aStream << '<';
+        aStream << aName;
         if(aValue.size() > 0) {
-            tmp += '>';
+            aStream << '>';
             const auto end = aValue.end();
             for(auto i = aValue.begin(); i != end; ++i) {
                 switch(i->getType()) {
                     case GenericValue::NULL_T:
-                        tmp += "<null/>";
+                        aStream << "<null/>";
                         break;
                     case GenericValue::CHAR_T:
-                        tmp += "<char>";
-                        tmp += i->getChar();
-                        tmp += "</char>";
+                        aStream << "<char>";
+                        aStream << i->getChar();
+                        aStream << "</char>";
                         break;
                     case GenericValue::BOOL_T:
-                        tmp += "<bool>";
+                        aStream << "<bool>";
                         if(i->getBool()) {
-                            tmp += "true";
+                            aStream << "true";
                         }else {
-                            tmp += "false";
+                            aStream << "false";
                         }
-                        tmp += "</bool>";
+                        aStream << "</bool>";
                         break;
                     case GenericValue::UNSIGNED_T:
-                        tmp += "<unsigned>";
-                        tmp += i->getUnsigned();
-                        tmp += "</unsigned>";
+                        aStream << "<unsigned>";
+                        aStream << i->getUnsigned();
+                        aStream << "</unsigned>";
                         break;
                     case GenericValue::SIGNED_T:
-                        tmp += "<signed>";
-                        tmp += i->getSigned();
-                        tmp += "</signed>";
+                        aStream << "<signed>";
+                        aStream << i->getSigned();
+                        aStream << "</signed>";
                         break;
                     case GenericValue::DOUBLE_T:
-                        tmp += "<double>";
-                        tmp += i->getDouble();
-                        tmp += "</double>";
+                        aStream << "<double>";
+                        aStream << i->getDouble();
+                        aStream << "</double>";
                         break;
                     case GenericValue::STRING_T:
-                        tmp += "<string>";
-                        tmp += i->getString();
-                        tmp += "</string>";
+                        aStream << "<string>";
+                        aStream << i->getString();
+                        aStream << "</string>";
                         break;
                     case GenericValue::ARRAY_T:
-                        tmp += writeArray(CString("array"), i->getArray());
+                        writeArray(CString("array"), i->getArray(), aStream);
                         break;
                     case GenericValue::OBJECT_T:
-                        tmp += writeObject(CString("object"), i->getObject());
+                        writeObject(CString("object"), i->getObject(), aStream);
                         break;
                     default:
                         break;
                 }
             }
 
-            tmp += '<';
-            tmp += '/';
-            tmp += aName;
-            tmp += '>';
+            aStream << '<';
+            aStream << '/';
+            aStream << aName;
+            aStream << '>';
         }else {
-            tmp += '/';
-            tmp += '>';
+            aStream << '/';
+            aStream << '>';
         }
+        return true;
     }
 
-    static CString writeObject(const StringConstant<char>& aName, const GenericObject& aValue) throw() {
-        CString tmp;
-
+    static bool writeObject(const StringConstant<char>& aName, const GenericObject& aValue, OStream& aStream) throw() {
         if(aValue.size() == 0) {
-            tmp += '<';
-            tmp += aName;
-            tmp += '/';
-            tmp += '>';
-            return tmp;
+            aStream << '<';
+            aStream << aName;
+            aStream << '/';
+            aStream << '>';
+            return true;
         }
 
         const auto entries = aValue.getEntries();
         const auto end = entries->end();
 
-        tmp += '<';
-        tmp += aName;
+        aStream << '<';
+        aStream << aName;
 
         // Write attributes
-        tmp += ' ';
+        aStream << ' ';
         for(auto i = entries->begin(); i != end; ++i) {
             switch(i->second.getType()) {
             case GenericValue::NULL_T:
-                tmp += i->first;
-                tmp += '=';
-                tmp += '"';
-                tmp += "null";
-                tmp += '"';
+                aStream << i->first;
+                aStream << '=';
+                aStream << '"';
+                aStream << "null";
+                aStream << '"';
                 break;
             case GenericValue::CHAR_T:
-                tmp += i->first;
-                tmp += '=';
-                tmp += '"';
-                tmp += i->second.getChar();
-                tmp += '"';
+                aStream << i->first;
+                aStream << '=';
+                aStream << '"';
+                aStream << i->second.getChar();
+                aStream << '"';
                 break;
             case GenericValue::BOOL_T:
-                tmp += i->first;
-                tmp += '=';
-                tmp += '"';
+                aStream << i->first;
+                aStream << '=';
+                aStream << '"';
                 if(i->second.getBool()) {
-                    tmp += "true";
+                    aStream << "true";
                 }else {
-                    tmp += "false";
+                    aStream << "false";
                 }
-                tmp += '"';
+                aStream << '"';
                 break;
             case GenericValue::UNSIGNED_T:
-                tmp += i->first;
-                tmp += '=';
-                tmp += '"';
-                tmp += i->second.getUnsigned();
-                tmp += '"';
+                aStream << i->first;
+                aStream << '=';
+                aStream << '"';
+                aStream << i->second.getUnsigned();
+                aStream << '"';
                 break;
             case GenericValue::SIGNED_T:
-                tmp += i->first;
-                tmp += '=';
-                tmp += '"';
-                tmp += i->second.getSigned();
-                tmp += '"';
+                aStream << i->first;
+                aStream << '=';
+                aStream << '"';
+                aStream << i->second.getSigned();
+                aStream << '"';
                 break;
             case GenericValue::DOUBLE_T:
-                tmp += i->first;
-                tmp += '=';
-                tmp += '"';
-                tmp += i->second.getDouble();
-                tmp += '"';
+                aStream << i->first;
+                aStream << '=';
+                aStream << '"';
+                aStream << i->second.getDouble();
+                aStream << '"';
                 break;
             case GenericValue::STRING_T:
-                tmp += i->first;
-                tmp += '=';
-                tmp += '"';
-                tmp += i->second.getString();
-                tmp += '"';
+                aStream << i->first;
+                aStream << '=';
+                aStream << '"';
+                aStream << i->second.getString();
+                aStream << '"';
                 break;
             default:
                 break;
             }
         }
 
-        tmp += '>';
+        aStream << '>';
 
         // Write elements
         for(auto i = entries->begin(); i != end; ++i) {
             switch(i->second.getType()) {
             case GenericValue::ARRAY_T:
-                tmp += writeArray(i->first, i->second.getArray());
+                writeArray(i->first, i->second.getArray(), aStream);
                 break;
             case GenericValue::OBJECT_T:
-                tmp += writeObject(i->first, i->second.getObject());
+                writeObject(i->first, i->second.getObject(), aStream);
                 break;
             default:
                 break;
             }
         }
 
-        tmp += '<';
-        tmp += '/';
-        tmp += aName;
-        tmp += '>';
+        aStream << '<';
+        aStream << '/';
+        aStream << aName;
+        aStream << '>';
+        return true;
     }
 
 
@@ -224,11 +222,9 @@ namespace Solaire {
         try{
             switch(aValue.getType()) {
             case GenericValue::ARRAY_T:
-                aStream << writeArray(CString("array"), aValue.getArray());
-                return true;
+                return writeArray(CString("array"), aValue.getArray(), aStream);
             case GenericValue::OBJECT_T:
-                aStream << writeObject(CString("object"), aValue.getObject());
-                return false;
+                return writeObject(CString("object"), aValue.getObject(), aStream);
             default:
                 return false;
             }

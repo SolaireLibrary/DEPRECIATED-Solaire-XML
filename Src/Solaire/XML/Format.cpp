@@ -121,56 +121,45 @@ namespace Solaire {
             switch(i->second.getType()) {
             case GenericValue::NULL_T:
                 aStream << i->first;
-                aStream << '=';
-                aStream << '"';
-                aStream << "null";
-                aStream << '"';
+                aStream << "=\"null\" ";
                 break;
             case GenericValue::CHAR_T:
                 aStream << i->first;
-                aStream << '=';
-                aStream << '"';
+                aStream << "=\"";
                 aStream << i->second.getChar();
-                aStream << '"';
+                aStream << "\" ";
                 break;
             case GenericValue::BOOL_T:
                 aStream << i->first;
-                aStream << '=';
-                aStream << '"';
                 if(i->second.getBool()) {
-                    aStream << "true";
+                    aStream << "=\"true\" ";
                 }else {
-                    aStream << "false";
+                    aStream << "=\"false\" ";
                 }
-                aStream << '"';
                 break;
             case GenericValue::UNSIGNED_T:
                 aStream << i->first;
-                aStream << '=';
-                aStream << '"';
+                aStream << "=\"";
                 aStream << i->second.getUnsigned();
-                aStream << '"';
+                aStream << "\" ";
                 break;
             case GenericValue::SIGNED_T:
                 aStream << i->first;
-                aStream << '=';
-                aStream << '"';
+                aStream << "=\"";
                 aStream << i->second.getSigned();
-                aStream << '"';
+                aStream << "\" ";
                 break;
             case GenericValue::DOUBLE_T:
                 aStream << i->first;
-                aStream << '=';
-                aStream << '"';
+                aStream << "=\"";
                 aStream << i->second.getDouble();
-                aStream << '"';
+                aStream << "\" ";
                 break;
             case GenericValue::STRING_T:
                 aStream << i->first;
-                aStream << '=';
-                aStream << '"';
+                aStream << "=\"";
                 aStream << i->second.getString();
-                aStream << '"';
+                aStream << "\" ";
                 break;
             default:
                 break;

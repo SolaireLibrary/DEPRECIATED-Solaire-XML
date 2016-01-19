@@ -32,6 +32,8 @@
 */
 
 #include "Solaire/Encode/Format.hpp"
+#include "Solaire/XML/Attribute.hpp"
+#include "Solaire/XML/Element.hpp"
 
 namespace Solaire {
 
@@ -43,6 +45,12 @@ namespace Solaire {
 
         GenericValue SOLAIRE_EXPORT_CALL readValue(IStream&) const throw() override;
         bool SOLAIRE_EXPORT_CALL writeValue(const GenericValue&, OStream&) const throw() override;
+
+        Attribute readAttribute(IStream&) const throw();
+        bool writeAttribute(const Attribute&, OStream&) const throw();
+
+        Element readElement(IStream&) const throw();
+        bool writeElement(const Element&, OStream&) const throw();
 	};
 
 	static const XmlFormat XML;

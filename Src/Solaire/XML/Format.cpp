@@ -223,4 +223,55 @@ namespace Solaire {
         }
     }
 
+    Attribute XmlFormat::readAttribute(IStream& aStream) const throw() {
+        //! \todo Implement readAttribute
+        return Attribute();
+    }
+
+    bool XmlFormat::writeAttribute(const Attribute& aAttribute, OStream& aStream) const throw() {
+        aStream << aAttribute.getName() << "=\"" << aAttribute.getValue() << '"';
+        return true;
+    }
+
+    Element XmlFormat::readElement(IStream& aStream) const throw() {
+        //! \todo Implement readElement
+        return Element();
+    }
+
+    bool XmlFormat::writeElement(const Element& aElement, OStream& aStream) const throw() {
+        aStream << '<' << aElement.getName();
+
+        const StaticContainer<const Attribute>& attributes = aElement.getAttributes();
+        if(attributes.size() > 0) {
+            aStream << ' ';
+            for(const Attribute& i : attributes) {
+                writeAttribute(i, aStream);
+                aStream << ' ';
+            }
+        }
+
+        const int32_t bodySize = aElement.getBody().size();
+        const int32_t elementCount = aElement.getElements().size();
+        if(bodySize + elementCount == 0) {
+            aStream << "/>";
+        }else {
+            aStream << '>';
+
+            if(bodySize != 0) {
+                if(elementCount != 0) return false;
+                const StaticContainer<const Element>& elements = aElement.getElements();
+                for(const Element& i : elements) {
+                    writeElement(i, aStream);
+                }
+            }else {
+                aStream << aElement.getBody();
+            }
+
+            aStream << "</";
+            aStream << aElement.getName();
+            aStream << '>';
+        }
+        return true;
+    }
+
 }

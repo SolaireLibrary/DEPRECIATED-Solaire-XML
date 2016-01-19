@@ -20,7 +20,7 @@
 
 namespace Solaire {
 
-    /*static bool skipWhitespace(IStream& aStream) {
+    static bool skipWhitespace(IStream& aStream) {
         if(aStream.end()) return true;
         char c;
         aStream >> c;
@@ -30,7 +30,8 @@ namespace Solaire {
         }
         aStream.setOffset(aStream.getOffset() - 1);
         return true;
-    }*/
+    }
+
     static bool writeObject(const StringConstant<char>& aName, const GenericObject& aValue, OStream& aStream) throw();
 
     static bool writeArray(const StringConstant<char>& aName, const GenericArray& aValue, OStream& aStream) throw() {
@@ -224,8 +225,28 @@ namespace Solaire {
     }
 
     Attribute XmlFormat::readAttribute(IStream& aStream) const throw() {
-        //! \todo Implement readAttribute
-        return Attribute();
+        if(! skipWhitespace(aStream)) return Attribute();
+        CString name;
+        char c;
+        if(aStream.end()) return Attribute();
+        aStream >> c;
+        while(c != '=') {
+            if(aStream.end()) return Attribute();
+            name += c;
+            aStream >> c;
+        }
+        if(aStream.end()) return Attribute();
+        aStream >> c;
+        if(c != '"') return Attribute();
+        CString value;
+        if(aStream.end()) return Attribute();
+        aStream >> c;
+        while(c != '"') {
+            if(aStream.end()) return Attribute();
+            name += c;
+            aStream >> c;
+        }
+        return Attribute(name, value);
     }
 
     bool XmlFormat::writeAttribute(const Attribute& aAttribute, OStream& aStream) const throw() {

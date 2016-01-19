@@ -190,6 +190,32 @@ namespace Solaire {
         return true;
     }
 
+    static GenericValue elementToGenericValue(const Element& aElement) throw() {
+        const String<char>& body = aElement.getBody();
+        const List<const Attribute>& attributes = aElement.getAttributes();
+        const List<const Element>& elements = aElement.getElements();
+        const int32_t bodySize = body.size();
+        const int32_t attributeCount = attributes.size();
+        const int32_t elementCount = elements.size();
+
+        if(bodySize + attributeCount + elementCount == 0) return GenericValue();
+        if(attributeCount + elementCount > 0) {
+            // Parse object
+        }else if(attributeCount + elementCount > 0) {
+            if(bodySize > 0) return GenericValue();
+            // Check if array
+            // Parse array
+            // Check if object
+            // Parse object
+            return GenericValue();
+        }else{
+            // Parse body value
+            GenericValue();
+        }
+
+        //! \todo convert Element to GenericValue
+        return GenericValue();
+    }
 
     // JsonFormat
 
@@ -198,13 +224,7 @@ namespace Solaire {
     }
 
     GenericValue SOLAIRE_EXPORT_CALL XmlFormat::readValue(IStream& aStream) const throw() {
-        try{
-            //! \todo Implement XML read
-            throw std::runtime_error("Not implemented");
-        }catch(std::exception& e) {
-            std::cerr << e.what() << std::endl;
-            return GenericValue();
-        }
+        return elementToGenericValue(readElement(aStream));
     }
 
     bool SOLAIRE_EXPORT_CALL XmlFormat::writeValue(const GenericValue& aValue, OStream& aStream) const throw() {

@@ -305,9 +305,34 @@ namespace Solaire {
 
         // Body
         {
-            // Read body
+            bool endBody = true;
+            while(endBody){
+                while(std::isspace(c)) {
+                    if(aStream.end()) return Element();
+                    aStream >> c;
+                }
 
-            // Read Elements
+                if(c == '<'){
+                    if(aStream.end()) return Element();
+                    aStream >> c;
+                    if(c == '/'){
+                        endBody = false;
+                        aStream.setOffset(aStream.getOffset() - 2);
+                    }else {
+                        // Read Element
+                        aStream.setOffset(aStream.getOffset() - 2);
+                        elements.pushBack(readElement(aStream));
+                        c = aStream.peek<char>();
+                    }
+                }else{
+                    // Read body
+                    body += c;
+                    if(aStream.end()) return Element();
+                    aStream >> c;
+                }
+            }
+
+
         }
 
         // End tag

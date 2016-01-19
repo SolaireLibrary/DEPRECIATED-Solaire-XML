@@ -44,6 +44,18 @@ namespace Solaire {
         Attribute(Allocator&) throw();
         Attribute(const StringConstant<char>&) throw();
         Attribute(const StringConstant<char>&, const StringConstant<char>&) throw();
+        Attribute(const StringConstant<char>&, char) throw();
+        Attribute(const StringConstant<char>&, bool) throw();
+        Attribute(const StringConstant<char>&, uint8_t) throw();
+        Attribute(const StringConstant<char>&, uint16_t) throw();
+        Attribute(const StringConstant<char>&, uint32_t) throw();
+        Attribute(const StringConstant<char>&, uint64_t) throw();
+        Attribute(const StringConstant<char>&, int8_t) throw();
+        Attribute(const StringConstant<char>&, int16_t) throw();
+        Attribute(const StringConstant<char>&, int32_t) throw();
+        Attribute(const StringConstant<char>&, int64_t) throw();
+        Attribute(const StringConstant<char>&, float) throw();
+        Attribute(const StringConstant<char>&, double) throw();
 
         String<char>& getName() throw();
         const String<char>& getName() const throw();

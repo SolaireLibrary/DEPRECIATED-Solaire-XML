@@ -31,7 +31,7 @@
 	Last Modified	: 19th January 2016
 */
 
-#include "Solaire/XML/Attibute.hpp"
+#include "Solaire/XML/Attribute.hpp"
 
 namespace Solaire {
 
@@ -39,10 +39,25 @@ namespace Solaire {
     private:
         CString mName;
         CString mBody;
-        ArrayList<Attibute> mAttributes;
+        ArrayList<Attribute> mAttributes;
         ArrayList<Element> mElements;
     public:
-        Attribute() throw();
+        Element() throw();
+        Element(Allocator&) throw();
+        Element(const StringConstant<char>&) throw();
+        Element(const StringConstant<char>&, const StringConstant<char>&) throw();
+        Element(const StringConstant<char>&, char) throw();
+        Element(const StringConstant<char>&, bool) throw();
+        Element(const StringConstant<char>&, uint8_t) throw();
+        Element(const StringConstant<char>&, uint16_t) throw();
+        Element(const StringConstant<char>&, uint32_t) throw();
+        Element(const StringConstant<char>&, uint64_t) throw();
+        Element(const StringConstant<char>&, int8_t) throw();
+        Element(const StringConstant<char>&, int16_t) throw();
+        Element(const StringConstant<char>&, int32_t) throw();
+        Element(const StringConstant<char>&, int64_t) throw();
+        Element(const StringConstant<char>&, float) throw();
+        Element(const StringConstant<char>&, double) throw();
 
         String<char>& getName() throw();
         const String<char>& getName() const throw();
@@ -53,11 +68,11 @@ namespace Solaire {
         void setBody(const StringConstant<char>&) throw();
         bool hasBody() const throw();
 
-        Container<Attribute>& getAttributes() throw();
-        const Container<const Attribute>& getAttributes() const throw();
+        StaticContainer<Attribute>& getAttributes() throw();
+        const StaticContainer<const Attribute>& getAttributes() const throw();
 
-        Container<Element>& getElements() throw();
-        const Container<const Element>& getElements() const throw();
+        StaticContainer<Element>& getElements() throw();
+        const StaticContainer<const Element>& getElements() const throw();
 
         Allocator& getAllocator() const throw();
     };

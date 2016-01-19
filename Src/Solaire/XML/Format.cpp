@@ -255,8 +255,100 @@ namespace Solaire {
     }
 
     Element XmlFormat::readElement(IStream& aStream) const throw() {
-        //! \todo Implement readElement
-        return Element();
+        if(! skipWhitespace(aStream)) return Element();
+        char c;
+        Element element;
+        String<char>& name = element.getName();
+        String<char>& body = element.getBody();
+        List<Attribute>& attributes = element.getAttributes();
+        List<Element>& elements = element.getElements();
+
+        // Start tag
+        {
+            // Open tag
+            if(aStream.end()) return Element();
+            aStream >> c;
+            if(c != '<')  return Element();
+
+            // Read name
+            if(aStream.end()) return Element();
+            aStream >> c;
+
+            while(! (std::isspace(c) || c == '/' || c == '>')) {
+                name += c;
+                if(aStream.end()) return Element();
+                aStream >> c;
+            }
+
+            // Close tag
+            bool endTag = true;
+            while(endTag) {
+                while(std::isspace(c)) {
+                    if(aStream.end()) return Element();
+                    aStream >> c;
+                }
+                if(c == '/') {
+                    if(aStream.end()) return Element();
+                    aStream >> c;
+                    if(c != '>')  return Element();
+                    return element;
+                }else if(c == '>') {
+                    endTag = false;
+                }else{
+                    aStream.setOffset(aStream.getOffset() - 1);
+                    // Read attributes
+                    attributes.pushBack(readAttribute(aStream));
+                    c = aStream.peek<char>();
+                }
+            }
+        }
+
+        // Body
+        {
+            // Read body
+
+            // Read Elements
+        }
+
+        // End tag
+        {
+
+            // Open tag
+            while(std::isspace(c)) {
+                if(aStream.end()) return Element();
+                aStream >> c;
+            }
+            if(aStream.end()) return Element();
+            aStream >> c;
+            if(c != '<') return Element();
+
+            if(aStream.end()) return Element();
+            aStream >> c;
+            if(c != '/') return Element();
+
+            // Read name
+            while(std::isspace(c)) {
+                if(aStream.end()) return Element();
+                aStream >> c;
+            }
+
+            CString endName;
+            while(! (std::isspace(c) || c == '>')) {
+                endName += c;
+                if(aStream.end()) return Element();
+                aStream >> c;
+            }
+
+            if(name != endName) return Element();
+
+            // Close Tag
+            while(c != '>') {
+                if(aStream.end()) return Element();
+                aStream >> c;
+            }
+        }
+
+        return element;
     }
 
     bool XmlFormat::writeElement(const Element& aElement, OStream& aStream) const throw() {

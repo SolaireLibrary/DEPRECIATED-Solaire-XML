@@ -189,19 +189,19 @@ namespace Solaire {
         return mBody.size() != 0;
     }
 
-    StaticContainer<Attribute>& Element::getAttributes() throw() {
+    List<Attribute>& Element::getAttributes() throw() {
         return mAttributes;
     }
 
-    const StaticContainer<const Attribute>& Element::getAttributes() const throw() {
+    const List<const Attribute>& Element::getAttributes() const throw() {
         return mAttributes;
     }
 
-    StaticContainer<Element>& Element::getElements() throw() {
+    List<Element>& Element::getElements() throw() {
         return mElements;
     }
 
-    const StaticContainer<const Element>& Element::getElements() const throw() {
+    const List<const Element>& Element::getElements() const throw() {
         return mElements;
     }
 

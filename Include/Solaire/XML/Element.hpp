@@ -68,11 +68,11 @@ namespace Solaire {
         void setBody(const StringConstant<char>&) throw();
         bool hasBody() const throw();
 
-        StaticContainer<Attribute>& getAttributes() throw();
-        const StaticContainer<const Attribute>& getAttributes() const throw();
+        List<Attribute>& getAttributes() throw();
+        const List<const Attribute>& getAttributes() const throw();
 
-        StaticContainer<Element>& getElements() throw();
-        const StaticContainer<const Element>& getElements() const throw();
+        List<Element>& getElements() throw();
+        const List<const Element>& getElements() const throw();
 
         Allocator& getAllocator() const throw();
     };

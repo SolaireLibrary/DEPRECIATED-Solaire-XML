@@ -190,6 +190,11 @@ namespace Solaire {
         return true;
     }
 
+    static GenericValue bodyToGenericValue(const String<char>&, const int32_t aBegin, const int32_t aEnd) throw() {
+        //! \todo Implement bodyToGenericValue
+        return GenericValue();
+    }
+
     static GenericValue elementToGenericValue(const Element& aElement) throw() {
         const String<char>& body = aElement.getBody();
         const List<const Attribute>& attributes = aElement.getAttributes();
@@ -203,14 +208,40 @@ namespace Solaire {
             // Parse object
         }else if(attributeCount + elementCount > 0) {
             if(bodySize > 0) return GenericValue();
-            // Check if array
-            // Parse array
-            // Check if object
+
+            {
+                ArrayList<const String<char>*> names;
+
+                for(const Attribute& i : attributes) {
+                    const String<char>& name = i.getName();
+                        for(const String<char>* j : names) if(*j == name){
+                            goto PARSE_ARRAY;
+                        }
+                }
+
+                for(const Element& i : elements) {
+                    const String<char>& name = i.getName();
+                        for(const String<char>* j : names) if(*j == name){
+                            goto PARSE_ARRAY;
+                        }
+                }
+            }
+
             // Parse object
-            return GenericValue();
+            {
+                GenericValue value(GenericValue::OBJECT_T);
+                return value;
+            }
+
+            // Parse array
+            PARSE_ARRAY:
+            {
+                GenericValue value(GenericValue::ARRAY_T);
+                return value;
+            }
         }else{
             // Parse body value
-            GenericValue();
+            bodyToGenericValue(body, 0, body.size());
         }
 
         //! \todo convert Element to GenericValue

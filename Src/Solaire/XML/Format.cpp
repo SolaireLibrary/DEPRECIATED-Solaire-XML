@@ -190,7 +190,7 @@ namespace Solaire {
         return true;
     }
 
-    static GenericValue bodyToGenericValue(const String<char>&, const int32_t aBegin, const int32_t aEnd) throw() {
+    static GenericValue bodyToGenericValue(const String<char>&) throw() {
         //! \todo Implement bodyToGenericValue
         return GenericValue();
     }
@@ -203,10 +203,9 @@ namespace Solaire {
         const int32_t attributeCount = attributes.size();
         const int32_t elementCount = elements.size();
 
-        if(bodySize + attributeCount + elementCount == 0) return GenericValue();
-        if(attributeCount + elementCount > 0) {
-            // Parse object
-        }else if(attributeCount + elementCount > 0) {
+        if(bodySize + attributeCount + elementCount == 0) {
+            return GenericValue();
+        } else if(attributeCount + elementCount > 0) {
             if(bodySize > 0) return GenericValue();
 
             {
@@ -230,6 +229,15 @@ namespace Solaire {
             // Parse object
             {
                 GenericValue value(GenericValue::OBJECT_T);
+
+                for(const Attribute& i : attributes) {
+                    value.emplace(i.getName(), bodyToGenericValue(i.getValue()));
+                }
+
+                for(const Element& i : elements) {
+                    value.emplace(i.getName(), elementToGenericValue(i));
+                }
+
                 return value;
             }
 
@@ -237,11 +245,20 @@ namespace Solaire {
             PARSE_ARRAY:
             {
                 GenericValue value(GenericValue::ARRAY_T);
+
+                for(const Attribute& i : attributes) {
+                    value.pushBack(bodyToGenericValue(i.getValue()));
+                }
+
+                for(const Element& i : elements) {
+                    value.pushBack(elementToGenericValue(i));
+                }
+
                 return value;
             }
         }else{
             // Parse body value
-            bodyToGenericValue(body, 0, body.size());
+            bodyToGenericValue(body);
         }
 
         //! \todo convert Element to GenericValue
@@ -249,6 +266,9 @@ namespace Solaire {
     }
 
     // JsonFormat
+    //! \todo Implement XML declaration
+    //! \todo Implement XML comments
+
 
     SOLAIRE_EXPORT_CALL XmlFormat::~XmlFormat() {
 

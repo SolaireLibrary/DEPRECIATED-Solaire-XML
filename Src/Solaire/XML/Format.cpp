@@ -191,7 +191,9 @@ namespace Solaire {
     }
 
     static GenericValue bodyToGenericValue(const String<char>& aString) throw() {
-        if(aString.size() == 0 || aString == "null") {
+        const int32_t length = aString.size();
+
+        if(length == 0 || aString == "null") {
             return GenericValue();
         }else if(aString == "true") {
             return GenericValue(true);
@@ -199,10 +201,20 @@ namespace Solaire {
             return GenericValue(false);
         }
 
-        // Check if number
-            // Parse number
+        bool isNumber = true;
+        int32_t i = 0;
+        if(aString[0] == '-') ++i;
+        for(i; i < length; ++i){
+            const char c = aString[i];
+            if(! ((c >= '0' && c <= '9') || c == '.' || c == 'e' || c == 'E')) {
+                isNumber = false;
+                break;
+            }
+        }
 
-        if(aString.size() == 1){
+        if(isNumber){
+            return GenericValue(static_cast<double>(aString));
+        }else if(length == 1){
             return GenericValue(aString[0]);
         }else {
             return GenericValue(aString);

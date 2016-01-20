@@ -199,10 +199,14 @@ namespace Solaire {
             return GenericValue(false);
         }
 
-        // Parse number
+        // Check if number
+            // Parse number
 
-        //! \todo Implement bodyToGenericValue
-        return GenericValue();
+        if(aString.size() == 1){
+            return GenericValue(aString[0]);
+        }else {
+            return GenericValue(aString);
+        }
     }
 
     static GenericValue elementToGenericValue(const Element& aElement) throw() {

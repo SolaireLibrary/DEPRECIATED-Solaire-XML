@@ -190,7 +190,17 @@ namespace Solaire {
         return true;
     }
 
-    static GenericValue bodyToGenericValue(const String<char>&) throw() {
+    static GenericValue bodyToGenericValue(const String<char>& aString) throw() {
+        if(aString.size() == 0 || aString == "null") {
+            return GenericValue();
+        }else if(aString == "true") {
+            return GenericValue(true);
+        }else if(aString == "false") {
+            return GenericValue(false);
+        }
+
+        // Parse number
+
         //! \todo Implement bodyToGenericValue
         return GenericValue();
     }
